@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',             'DiviDataController@showAll')   ->name('clinics');
-Route::get('clinic/{id}',   'DiviDataController@show')      ->name('clinic');
+Route::get('/',             'DiviDataController@showAll')       ->name('clinics');
+Route::get('clinic/{id}',   'DiviDataController@show')          ->name('clinic');
 
-Route::get('export/{type}', 'DiviDataController@export')    ->name('export');
+Route::get('export/{type}', 'DiviDataController@export')        ->name('export');
+
+Route::get('impressum',     'StaticPageController@impressum')   ->name('impressum');

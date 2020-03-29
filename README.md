@@ -1,6 +1,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # Divi Intensivregister Crawler
+Software is running at [divi.hohner.dev](https://divi.hohner.dev/). All collected data since 29/03/2020 is available there.
+
 ## License
 Copyright 2020 Jan Hohner, Lisa Lengenfelder
 
