@@ -12,3 +12,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/',             'DiviDataController@showAll')   ->name('clinics');
+Route::get('clinic/{id}',   'DiviDataController@show')      ->name('clinic');

@@ -45,4 +45,20 @@ class ClinicStatus extends Model
     {
         return $this->belongsTo(Clinic::class, 'clinic_id', 'id');
     }
+
+    public static function colourToNumber($colour): int
+    {
+        switch ($colour) {
+            case 'unavailable':
+                return 0;
+            case 'green':
+                return 1;
+            case 'yellow':
+                return 2;
+            case 'red':
+                return 3;
+            default:
+                return -1;
+        }
+    }
 }

@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Clinic;
+use App\ClinicStatus;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Builder;
+
+class DiviDataController extends Controller
+{
+    public function showAll()
+    {
+        $clinics = Clinic::with('statuses')
+            ->orderBy('address', 'asc')
+            ->get()
+            ->map(function (Clinic $clinic) {
+                return $this->mapClinic($clinic);
+            })->all();
+
+        return view('data.clinics', [
+            'clinics' => $clinics,
+        ]);
+    }
+
+    public function show(string $id)
+    {
+        /** @var Clinic $clinic */
+        $clinic = Clinic::with([
+            'statuses' => function ($query) {
+                /** @var Builder $query */
+                $query->orderBy('submitted_at', 'desc');
+            }
+        ])
+            ->find($id);
+        abort_if(! $clinic, 404, 'Clinic not found');
+
+        $clinic = $this->mapClinic($clinic);
+
+        return view('data.clinic', [
+            'clinic' => $clinic,
+        ]);
+    }
+
+    private function mapClinic(Clinic $clinic): array
+    {
+        $addressArray = explode(PHP_EOL, $clinic->address);
+        $addressArrayLength = count($addressArray);
+        $address = $addressArray[$addressArrayLength - 2];
+        $city = $addressArray[$addressArrayLength - 1];
+
+        unset($addressArray[$addressArrayLength - 2]);
+        unset($addressArray[$addressArrayLength - 1]);
+
+        $name = implode(' ', $addressArray);
+
+        return [
+            'id' => $clinic->id,
+            'name' => $name,
+            'address' => $address,
+            'city' => $city,
+            'state' => $clinic->state,
+            'last_submit_at' => $clinic->last_submit_at,
+            'statuses' => $clinic->statuses,
+        ];
+    }
+}
