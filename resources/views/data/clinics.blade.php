@@ -1,6 +1,9 @@
 @extends('layouts.base')
 
 @section('content')
+    <nav class="text-right">
+        <a href="{{ route('export', ['type' => 'json']) }}">Export (JSON)</a>
+    </nav>
     <h1>DIVI Intensivregister Data</h1>
     <h2>Kliniken</h2>
     <p>Spalten sind per Klick auf den Spaltentitel sortierbar.</p>

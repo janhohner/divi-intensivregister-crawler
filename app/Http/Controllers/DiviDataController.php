@@ -42,7 +42,28 @@ class DiviDataController extends Controller
         ]);
     }
 
-    private function mapClinic(Clinic $clinic): array
+    public function export(string $type)
+    {
+        if ($type === 'json') {
+            return $this->exportJson();
+        }
+
+        abort(400, 'Unknown export format');
+    }
+
+    private function exportJson()
+    {
+        $clinics = Clinic::with('statuses')
+            ->orderBy('address', 'asc')
+            ->get()
+            ->map(function (Clinic $clinic) {
+                return $this->mapClinic($clinic, true);
+            })->all();
+
+        return response()->json($clinics);
+    }
+
+    private function mapClinic(Clinic $clinic, bool $mapStatuses = false): array
     {
         $addressArray = explode(PHP_EOL, $clinic->address);
         $addressArrayLength = count($addressArray);
@@ -54,6 +75,11 @@ class DiviDataController extends Controller
 
         $name = implode(' ', $addressArray);
 
+        $statuses = $clinic->statuses;
+        if ($mapStatuses) {
+            $statuses = $this->mapStatuses($statuses);
+        }
+
         return [
             'id' => $clinic->id,
             'name' => $name,
@@ -61,7 +87,20 @@ class DiviDataController extends Controller
             'city' => $city,
             'state' => $clinic->state,
             'last_submit_at' => $clinic->last_submit_at,
-            'statuses' => $clinic->statuses,
+            'statuses' => $statuses,
         ];
+    }
+
+    private function mapStatuses(Collection $statuses): array
+    {
+        return $statuses->map(function (ClinicStatus $status) {
+            return [
+                'icu_low_care' => $status->icu_low_care,
+                'icu_high_care' => $status->icu_high_care,
+                'ecmo' => $status->ecmo,
+                'submitted_at' => $status->submitted_at->format('Y-m-d H:i'),
+            ];
+        })
+            ->all();
     }
 }
