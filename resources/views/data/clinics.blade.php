@@ -12,7 +12,11 @@
         gesammelt und gespeichert. Oben rechts gibt es die Möglichkeit die Daten runterzuladen.<br>
         Nutzung der Daten ist unter
         <a href="https://creativecommons.org/licenses/by-sa/3.0/de/" target="_blank">CC BY-SA 3.0</a>
-        möglich.
+        möglich. Zitatvorschlag:
+        <i>
+            Hohner, J., Lengenfelder, L. (2020),
+            <a href="https://divi.hohner.dev">https://divi.hohner.dev</a>
+        </i>
     </p>
 
     <h2>Kliniken</h2>
