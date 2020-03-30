@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Clinic;
 use App\ClinicStatus;
+use App\DataRequest;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
 
@@ -59,6 +60,8 @@ class DiviDataController extends Controller
             ->map(function (Clinic $clinic) {
                 return $this->mapClinic($clinic, true);
             })->all();
+
+        DataRequest::incrementKey('json_request');
 
         return response()->json($clinics);
     }
