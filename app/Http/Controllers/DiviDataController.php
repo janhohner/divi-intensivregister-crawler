@@ -147,6 +147,7 @@ class DiviDataController extends Controller
         unset($addressArray[$addressArrayLength - 1]);
 
         $name = implode(' ', $addressArray);
+        $name = str_replace('&amp;', '&', $name);
 
         $statuses = $clinic->statuses;
         if ($mapStatuses) {
