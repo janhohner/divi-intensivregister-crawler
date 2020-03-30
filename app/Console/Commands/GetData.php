@@ -130,7 +130,9 @@ class GetData extends Command
                 $clinicStatus->save();
             }
 
-            $clinic->last_submit_at = $lastSubmitAt;
+            if ($clinic->last_submit_at->lessThan($lastSubmitAt)) {
+                $clinic->last_submit_at = $lastSubmitAt;
+            }
             $clinic->save();
 
             $this->output->progressAdvance();
