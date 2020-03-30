@@ -19,5 +19,13 @@ class DataRequestSeeder extends Seeder
             $jsonRequest->value = 0;
             $jsonRequest->save();
         }
+
+        $csvRequest = DataRequest::firstWhere('key', '=', 'csv_request');
+        if (! $csvRequest) {
+            $csvRequest = new DataRequest();
+            $csvRequest->key = 'csv_request';
+            $csvRequest->value = 0;
+            $csvRequest->save();
+        }
     }
 }

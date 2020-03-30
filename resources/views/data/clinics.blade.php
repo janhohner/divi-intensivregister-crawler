@@ -3,13 +3,14 @@
 @section('content')
     <nav class="text-right">
         <a href="{{ route('export', ['type' => 'json']) }}">Export (JSON)</a>&emsp;|&emsp;
+        <a href="{{ route('export', ['type' => 'csv']) }}">Export (CSV)</a>&emsp;|&emsp;
         <a href="{{ route('impressum') }}">Impressum</a>
     </nav>
     <h1>DIVI Intensivregister Data</h1>
     <p>
         Die Daten werden stündlich aus dem
         <a href="https://www.divi.de/register/intensivregister" target="_blank">DIVI Intensivregister</a>
-        gesammelt und gespeichert. Oben rechts gibt es die Möglichkeit die Daten runterzuladen.<br>
+        gesammelt und gespeichert. Oben rechts gibt es die Möglichkeit die Daten herunterzuladen.<br>
         Nutzung der Daten ist unter
         <a href="https://creativecommons.org/licenses/by-sa/3.0/de/" target="_blank">CC BY-SA 3.0</a>
         möglich. Zitatvorschlag:
