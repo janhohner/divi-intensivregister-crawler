@@ -17,7 +17,8 @@
         "laravel/tinker": "^2.0",
         "league/csv": "^9.6",
         "maennchen/zipstream-php": "^2.0",
-        "symfony/dom-crawler": "^5.0"
+        "symfony/dom-crawler": "^5.0",
+        "ext-json": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.6",
