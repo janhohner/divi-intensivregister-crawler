@@ -2,7 +2,8 @@
 
 namespace App\Console;
 
-use App\Console\Commands\GetData;
+use App\Console\Commands\GetIcuData;
+use App\Console\Commands\GetMapData;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,7 +26,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(GetData::class)->hourly();
+        $schedule->command(GetIcuData::class)->hourly();
+        $schedule->command(GetMapData::class)->hourlyAt(30);
     }
 
     /**

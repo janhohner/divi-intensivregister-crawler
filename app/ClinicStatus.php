@@ -18,7 +18,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon $created_at
  * @property      Carbon $updated_at
  *
- * @property-read Clinic $statuses
+ * @property-read Clinic $clinic
  */
 class ClinicStatus extends Model
 {

@@ -11,14 +11,14 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
-class GetData extends Command
+class GetIcuData extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'divi:get-data';
+    protected $signature = 'divi:get-icu-data';
 
     /**
      * The console command description.
