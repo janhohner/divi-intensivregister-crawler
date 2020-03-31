@@ -31,6 +31,8 @@ class DataRequest extends Model
 
     public static function incrementKey(string $key)
     {
-        DB::table('data_requests')->where('key', '=', $key)->increment('value');
+        DB::table('data_requests')->where('key', '=', $key)->increment('value', 1, [
+            'updated_at' => Carbon::now(),
+        ]);
     }
 }
