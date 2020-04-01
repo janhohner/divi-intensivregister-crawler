@@ -30,10 +30,10 @@
                     <li @if(Route::currentRouteName() === 'data.load.clinics') class="menu-active" @endif>
                         <a href="{{ route('data.load.clinics') }}">Auslastung</a>
                     </li>
-                    <!--<li>
-                        <a href="#features">Fallzahlen</a>
+                    <li @if(Route::currentRouteName() === 'data.cases.clinics') class="menu-active" @endif>
+                        <a href="{{ route('data.cases.clinics') }}">Fallzahlen</a>
                     </li>
-                    <li><a href="#screenshots">Über uns</a></li>-->
+                    <!--<li><a href="#screenshots">Über uns</a></li>-->
                 </ul>
             </nav>
         </div>

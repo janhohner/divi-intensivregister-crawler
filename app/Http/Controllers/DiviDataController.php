@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Clinic;
 use App\ClinicStatus;
 use App\DataRequest;
+use App\MapClinic;
+use App\MapClinicStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
@@ -23,7 +25,7 @@ class DiviDataController extends Controller
             ->orderBy('address', 'asc')
             ->get()
             ->map(function (Clinic $clinic) {
-                return $this->mapClinic($clinic);
+                return $this->mapLoadClinic($clinic);
             })->all();
 
         return view('data.load.clinics', [
@@ -43,7 +45,7 @@ class DiviDataController extends Controller
             ->find($id);
         abort_if(! $clinic, 404, 'Clinic not found');
 
-        $clinic = $this->mapClinic($clinic);
+        $clinic = $this->mapLoadClinic($clinic);
 
         return view('data.load.clinic', [
             'clinic' => $clinic,
@@ -76,7 +78,7 @@ class DiviDataController extends Controller
             ->orderBy('address', 'asc')
             ->get()
             ->map(function (Clinic $clinic) {
-                return $this->mapClinic($clinic, true);
+                return $this->mapLoadClinic($clinic, true);
             })->all();
 
         DataRequest::incrementKey('json_request');
@@ -94,7 +96,7 @@ class DiviDataController extends Controller
             ->orderBy('address', 'asc')
             ->get()
             ->map(function (Clinic $clinic) {
-                return $this->mapClinic($clinic);
+                return $this->mapLoadClinic($clinic);
             });
 
         $headerClinics = ['id', 'name', 'address', 'city', 'state', 'num_statuses', 'last_submit_at'];
@@ -151,7 +153,7 @@ class DiviDataController extends Controller
      * @param bool $mapStatuses
      * @return array
      */
-    private function mapClinic(Clinic $clinic, bool $mapStatuses = false): array
+    private function mapLoadClinic(Clinic $clinic, bool $mapStatuses = false): array
     {
         $addressArray = explode(PHP_EOL, $clinic->address);
         $addressArrayLength = count($addressArray);
@@ -166,7 +168,7 @@ class DiviDataController extends Controller
 
         $statuses = $clinic->statuses;
         if ($mapStatuses) {
-            $statuses = $this->mapStatuses($statuses);
+            $statuses = $this->mapLoadStatuses($statuses);
         }
 
         return [
@@ -184,13 +186,85 @@ class DiviDataController extends Controller
      * @param Collection $statuses
      * @return array
      */
-    private function mapStatuses(Collection $statuses): array
+    private function mapLoadStatuses(Collection $statuses): array
     {
         return $statuses->map(function (ClinicStatus $status) {
             return [
                 'icu_low_care' => $status->icu_low_care,
                 'icu_high_care' => $status->icu_high_care,
                 'ecmo' => $status->ecmo,
+                'submitted_at' => $status->submitted_at->format('Y-m-d H:i'),
+            ];
+        })
+            ->all();
+    }
+
+    public function showAllCases()
+    {
+        $clinics = MapClinic::with('statuses')
+            ->orderBy('name', 'asc')
+            ->get()
+            ->map(function (MapClinic $clinic) {
+                return $this->mapCasesClinic($clinic);
+            })->all();
+
+        return view('data.cases.clinics', [
+            'clinics' => $clinics,
+        ]);
+    }
+
+
+    public function showCases(string $id)
+    {
+        /** @var MapClinic $clinic */
+        $clinic = MapClinic::with([
+            'statuses' => function ($query) {
+                /** @var Builder $query */
+                $query->orderBy('submitted_at', 'desc');
+            }
+        ])
+            ->find($id);
+        abort_if(! $clinic, 404, 'Clinic not found');
+
+        $clinic = $this->mapCasesClinic($clinic);
+
+        return view('data.cases.clinic', [
+            'clinic' => $clinic,
+        ]);
+    }
+
+    /**
+     * @param MapClinic $clinic
+     * @param bool $mapStatuses
+     * @return array
+     */
+    private function mapCasesClinic(MapClinic $clinic, bool $mapStatuses = false): array
+    {
+        $statuses = $clinic->statuses;
+        if ($mapStatuses) {
+            $statuses = $this->mapCasesStatuses($statuses);
+        }
+
+        return [
+            'id' => $clinic->id,
+            'name' => $clinic->name,
+            'state' => $clinic->state,
+            'lat' => $clinic->lat,
+            'lon' => $clinic->lon,
+            'last_submit_at' => $clinic->last_submit_at,
+            'statuses' => $statuses,
+        ];
+    }
+
+    /**
+     * @param Collection $statuses
+     * @return array
+     */
+    private function mapCasesStatuses(Collection $statuses): array
+    {
+        return $statuses->map(function (MapClinicStatus $status) {
+            return [
+                'covid19_cases' => $status->covid19_cases,
                 'submitted_at' => $status->submitted_at->format('Y-m-d H:i'),
             ];
         })

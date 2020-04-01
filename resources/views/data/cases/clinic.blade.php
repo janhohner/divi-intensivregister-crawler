@@ -3,7 +3,7 @@
 @section('content')
     <section class="padd-section text-center">
         <div class="container">
-            <h1>Klinikauslastung</h1>
+            <h1>Fallzahlen</h1>
             <h2>{{ $clinic['name'] }}</h2>
             <p>Folgende Stände sind gesammelt worden:</p>
         </div>
@@ -13,9 +13,7 @@
         <thead class="thead-light">
         <tr>
             <th scope="col">#</th>
-            <th scope="col">ICU low care</th>
-            <th scope="col">ICU high care</th>
-            <th scope="col">ECMO</th>
+            <th scope="col">Covid19 Fälle</th>
             <th scope="col">Meldezeitpunkt</th>
         </tr>
         </thead>
@@ -23,15 +21,7 @@
         @foreach($clinic['statuses'] as $status)
             <tr>
                 <th scope="row">{{ count($clinic['statuses']) - $loop->iteration + 1 }}</th>
-                <td sorttable_customkey="{{ \App\ClinicStatus::colourToNumber($status['icu_low_care']) }}">
-                    {{ $status['icu_low_care'] }}
-                </td>
-                <td sorttable_customkey="{{ \App\ClinicStatus::colourToNumber($status['icu_high_care']) }}">
-                    {{ $status['icu_high_care'] }}
-                </td>
-                <td sorttable_customkey="{{ \App\ClinicStatus::colourToNumber($status['ecmo']) }}">
-                    {{ $status['ecmo'] }}
-                </td>
+                <th scope="row">{{ $status->covid19_cases }}</th>
                 <td sorttable_customkey="{{ $status['submitted_at']->format('YmdHi') }}">
                     {{ $status['submitted_at']->format('d.m.Y H:i') }}
                 </td>
