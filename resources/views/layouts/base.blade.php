@@ -24,9 +24,15 @@
 
             <nav id="nav-menu-container">
                 <ul class="nav-menu">
-                    <li @if(Route::currentRouteName() === 'home') class="menu-active" @endif><a href="{{ route('home') }}">Home</a></li>
-                    <li @if(Route::currentRouteName() === 'clinics') class="menu-active" @endif><a href="{{ route('clinics') }}">Auslastung</a></li>
-                    <!--<li><a href="#features">Fallzahlen</a></li>
+                    <li @if(Route::currentRouteName() === 'home') class="menu-active" @endif>
+                        <a href="{{ route('home') }}">Home</a>
+                    </li>
+                    <li @if(Route::currentRouteName() === 'data.load.clinics') class="menu-active" @endif>
+                        <a href="{{ route('data.load.clinics') }}">Auslastung</a>
+                    </li>
+                    <!--<li>
+                        <a href="#features">Fallzahlen</a>
+                    </li>
                     <li><a href="#screenshots">Über uns</a></li>-->
                 </ul>
             </nav>

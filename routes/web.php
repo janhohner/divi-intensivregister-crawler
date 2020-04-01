@@ -13,10 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',             'StaticPageController@home')        ->name('home');
-Route::get('impressum',     'StaticPageController@impressum')   ->name('impressum');
+Route::get('/',                         'StaticPageController@home')        ->name('home');
+Route::get('impressum',                 'StaticPageController@impressum')   ->name('impressum');
 
-Route::get('clinics',       'DiviDataController@showAll')       ->name('clinics');
-Route::get('clinic/{id}',   'DiviDataController@show')          ->name('clinic');
+Route::get('data/load/clinics',         'DiviDataController@showAllLoad')   ->name('data.load.clinics');
+Route::get('data/load/clinic/{id}',     'DiviDataController@showLoad')      ->name('data.load.clinic');
+Route::get('data/load/export/{type}',   'DiviDataController@exportLoad')    ->name('data.load.export');
 
-Route::get('export/{type}', 'DiviDataController@export')        ->name('export');
+/* backwards compatibility */
+Route::get('clinics', function () { return redirect()->route('data.load.clinics'); });
+Route::get('clinic/{id}', function ($id) { return redirect()->route('data.load.clinic', ['id' => $id]); });
+Route::get('export/{type}', function ($type) { return redirect()->route('data.load.export', ['type' => $type]); });

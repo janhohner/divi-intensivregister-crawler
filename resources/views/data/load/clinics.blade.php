@@ -16,8 +16,8 @@
                     <a href="https://divi.hohner.dev">https://divi.hohner.dev</a>
                 </i>
             </p>
-            <a href="{{ route('export', ['type' => 'json']) }}" class="btn-get-started mr-2 font-weight-bold">JSON</a>
-            <a href="{{ route('export', ['type' => 'csv']) }}" class="btn-get-started ml-2 font-weight-bold">CSV</a>
+            <a href="{{ route('data.load.export', ['type' => 'json']) }}" class="btn-get-started mr-2 font-weight-bold">JSON</a>
+            <a href="{{ route('data.load.export', ['type' => 'csv']) }}" class="btn-get-started ml-2 font-weight-bold">CSV</a>
         </div>
     </section>
 
@@ -44,7 +44,7 @@
                 <tr>
                     <th scope="row">{{ $clinic['id'] }}</th>
                     <td sorttable_customkey="{{ $clinic['name'] }}">
-                        <a href="{{ route('clinic', ['id' => $clinic['id']]) }}">
+                        <a href="{{ route('data.load.clinic', ['id' => $clinic['id']]) }}">
                             {{ $clinic['name'] }}
                         </a>
                     </td>

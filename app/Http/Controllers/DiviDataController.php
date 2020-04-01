@@ -8,6 +8,7 @@ use App\DataRequest;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Http\JsonResponse;
 use League\Csv\CannotInsertRecord;
 use League\Csv\Writer;
 use ZipStream\Exception\OverflowException;
@@ -16,7 +17,7 @@ use ZipStream\ZipStream;
 
 class DiviDataController extends Controller
 {
-    public function showAll()
+    public function showAllLoad()
     {
         $clinics = Clinic::with('statuses')
             ->orderBy('address', 'asc')
@@ -25,12 +26,12 @@ class DiviDataController extends Controller
                 return $this->mapClinic($clinic);
             })->all();
 
-        return view('data.clinics', [
+        return view('data.load.clinics', [
             'clinics' => $clinics,
         ]);
     }
 
-    public function show(string $id)
+    public function showLoad(string $id)
     {
         /** @var Clinic $clinic */
         $clinic = Clinic::with([
@@ -44,23 +45,32 @@ class DiviDataController extends Controller
 
         $clinic = $this->mapClinic($clinic);
 
-        return view('data.clinic', [
+        return view('data.load.clinic', [
             'clinic' => $clinic,
         ]);
     }
 
-    public function export(string $type)
+    /**
+     * @param string $type
+     * @return JsonResponse|void
+     * @throws CannotInsertRecord
+     * @throws OverflowException
+     */
+    public function exportLoad(string $type)
     {
         if ($type === 'json') {
-            return $this->exportJson();
+            return $this->exportLoadJson();
         } else if ($type === 'csv') {
-            return $this->exportCsv();
+            return $this->exportLoadCsv();
         }
 
         abort(400, 'Unknown export format');
     }
 
-    private function exportJson()
+    /**
+     * @return JsonResponse
+     */
+    private function exportLoadJson()
     {
         $clinics = Clinic::with('statuses')
             ->orderBy('address', 'asc')
@@ -78,7 +88,7 @@ class DiviDataController extends Controller
      * @throws CannotInsertRecord
      * @throws OverflowException
      */
-    private function exportCsv()
+    private function exportLoadCsv()
     {
         $clinics = Clinic::with('statuses')
             ->orderBy('address', 'asc')
@@ -136,6 +146,11 @@ class DiviDataController extends Controller
         $zip->finish();
     }
 
+    /**
+     * @param Clinic $clinic
+     * @param bool $mapStatuses
+     * @return array
+     */
     private function mapClinic(Clinic $clinic, bool $mapStatuses = false): array
     {
         $addressArray = explode(PHP_EOL, $clinic->address);
@@ -165,6 +180,10 @@ class DiviDataController extends Controller
         ];
     }
 
+    /**
+     * @param Collection $statuses
+     * @return array
+     */
     private function mapStatuses(Collection $statuses): array
     {
         return $statuses->map(function (ClinicStatus $status) {
