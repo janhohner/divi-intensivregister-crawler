@@ -10,7 +10,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Helper\ProgressBar;
 
 class GetMapData extends Command
 {
@@ -27,11 +26,6 @@ class GetMapData extends Command
      * @var string
      */
     protected $description = 'Get data from DIVI Map';
-
-    /**
-     * @var ProgressBar
-     */
-    private $progressBar;
 
     /**
      * Create a new command instance.
@@ -86,7 +80,7 @@ class GetMapData extends Command
             return;
         }
 
-        $this->progressBar = $this->output->createProgressBar(0);
+        $collectedData = [];
 
         foreach ($htmlLines as $line) {
             $line = trim($line);
@@ -140,39 +134,41 @@ class GetMapData extends Command
                         ];
                     })->all();
 
-                $this->progressBar->setMaxSteps($this->progressBar->getMaxSteps() + count($data));
-
-                $this->saveData($data, $submittedAt);
+                $collectedData = array_merge($collectedData, $data);
             }
         }
 
-        $this->output->success('Finished.');
+        $this->output->progressStart(count($collectedData));
+        $this->saveData($collectedData, $submittedAt);
+
         return;
     }
 
     private function saveData(array $data, Carbon $submittedAt)
     {
-        foreach ($data as $element) {
-            $clinic = MapClinic::firstWhere('clinic_identifier', '=', $element['id']);
-            if (! $clinic) {
-                $clinic = new MapClinic();
-                $clinic->clinic_identifier = $element['id'];
-                $clinic->name = $element['Klinikname'];
-                $clinic->state = $element['Bundesland'];
-                $clinic->lat = $element['lat'];
-                $clinic->lon = $element['lon'];
+        \DB::transaction(function () use ($data, $submittedAt) {
+            foreach ($data as $element) {
+                $clinic = MapClinic::firstWhere('clinic_identifier', '=', $element['id']);
+                if (! $clinic) {
+                    $clinic = new MapClinic();
+                    $clinic->clinic_identifier = $element['id'];
+                    $clinic->name = $element['Klinikname'];
+                    $clinic->state = $element['Bundesland'];
+                    $clinic->lat = $element['lat'];
+                    $clinic->lon = $element['lon'];
+                }
+
+                $clinic->last_submit_at = $submittedAt;
+                $clinic->save();
+
+                $clinicStatus = new MapClinicStatus();
+                $clinicStatus->map_clinic_id = $clinic->id;
+                $clinicStatus->covid19_cases = $element['COVID-19 aktuell'];
+                $clinicStatus->submitted_at = $submittedAt;
+                $clinicStatus->save();
+
+                $this->output->progressAdvance();
             }
-
-            $clinic->last_submit_at = $submittedAt;
-            $clinic->save();
-
-            $clinicStatus = new MapClinicStatus();
-            $clinicStatus->map_clinic_id = $clinic->id;
-            $clinicStatus->covid19_cases = $element['COVID-19 aktuell'];
-            $clinicStatus->submitted_at = $submittedAt;
-            $clinicStatus->save();
-
-            $this->progressBar->advance();
-        }
+        });
     }
 }
