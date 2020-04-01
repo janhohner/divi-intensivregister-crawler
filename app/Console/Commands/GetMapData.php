@@ -107,16 +107,36 @@ class GetMapData extends Command
                     }
                 }
 
-                $data = collect($data)->groupBy('Klinikname')->map(function (Collection $collection) {
-                    $first = $collection->first();
-                    return [
-                        'Klinikname' => $first['Klinikname'],
-                        'Bundesland' => $first['Bundesland'],
-                        'lat' => $first['lat'],
-                        'lon' => $first['lon'],
-                        'COVID-19 aktuell' => $collection->sum('COVID-19 aktuell'),
-                    ];
-                })->all();
+                foreach ($data as $entry) {
+                    foreach ($entry as $k => $v) {
+                        $entry[$k] = trim($v);
+                    }
+
+                    if (! isset($entry['Klinikname']) && strlen($entry['Klinikname']) === 0) {
+                        throw new Exception('Empty clinic name! Trying again next cycle.');
+                    }
+
+                    $entry['id'] = sha1(strtolower($entry['Klinikname'] . $entry['Bundesland']));
+                }
+
+                $data = collect($data)
+                    ->map(function (array $entry) {
+
+
+                        return $entry;
+                    })
+                    ->groupBy('id')
+                    ->map(function (Collection $collection) {
+                        $first = $collection->first();
+                        return [
+                            'id' => $first['id'],
+                            'Klinikname' => $first['Klinikname'],
+                            'Bundesland' => $first['Bundesland'],
+                            'lat' => $first['lat'],
+                            'lon' => $first['lon'],
+                            'COVID-19 aktuell' => $collection->sum('COVID-19 aktuell'),
+                        ];
+                    })->all();
 
                 $this->progressBar->setMaxSteps($this->progressBar->getMaxSteps() + count($data));
 
@@ -131,11 +151,10 @@ class GetMapData extends Command
     private function saveData(array $data, Carbon $submittedAt)
     {
         foreach ($data as $element) {
-            $id = sha1($element['Klinikname'] . $element['Bundesland']);
-            $clinic = MapClinic::firstWhere('clinic_identifier', '=', $id);
+            $clinic = MapClinic::firstWhere('clinic_identifier', '=', $element['id']);
             if (! $clinic) {
                 $clinic = new MapClinic();
-                $clinic->clinic_identifier = $id;
+                $clinic->clinic_identifier = $element['id'];
                 $clinic->name = $element['Klinikname'];
                 $clinic->state = $element['Bundesland'];
                 $clinic->lat = $element['lat'];
