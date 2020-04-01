@@ -6,3 +6,44 @@ table.sortable thead th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):no
     content: " \25B4\25BE";
     padding-right: .75rem;
 }
+
+.pull-left {
+    float: left;
+}
+
+.nav-menu li {
+    text-transform: none;
+}
+
+a {
+    color: #71c55d;
+}
+
+.footer {
+    background: #fff;
+}
+
+.footer p {
+    line-height: 1.5;
+}
+
+table a {
+    letter-spacing: unset;
+}
+
+.btn-get-started {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 11px 36px;
+    border-radius: 50px;
+    transition: 0.5s;
+    margin-bottom: 30px;
+    border: 2px solid #71c55d;
+    background: #fff;
+    color: #71c55d;
+    text-decoration: none;
+}

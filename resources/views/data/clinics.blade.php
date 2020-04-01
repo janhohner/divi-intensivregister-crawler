@@ -1,30 +1,34 @@
 @extends('layouts.base')
 
 @section('content')
-    <nav class="text-right">
-        <a href="{{ route('export', ['type' => 'json']) }}">Export (JSON)</a>&emsp;|&emsp;
-        <a href="{{ route('export', ['type' => 'csv']) }}">Export (CSV)</a>&emsp;|&emsp;
-        <a href="{{ route('impressum') }}">Impressum</a>
-    </nav>
-    <h1>DIVI Intensivregister Data</h1>
-    <p>
-        Die Daten werden stündlich aus dem
-        <a href="https://www.divi.de/register/intensivregister" target="_blank">DIVI Intensivregister</a>
-        gesammelt und gespeichert. Oben rechts gibt es die Möglichkeit die Daten herunterzuladen.<br>
-        Nutzung der Daten ist unter
-        <a href="https://creativecommons.org/licenses/by-sa/3.0/de/" target="_blank">CC BY-SA 3.0</a>
-        möglich. Zitatvorschlag:
-        <i>
-            Hohner, J., Lengenfelder, L. (2020),
-            <a href="https://divi.hohner.dev">https://divi.hohner.dev</a>
-        </i>
-    </p>
+    <section class="padd-section text-center">
+        <div class="container">
+            <h1>Klinikauslastung</h1>
+            <p>
+                Die Daten werden stündlich aus dem
+                <a href="https://www.divi.de/register/intensivregister" target="_blank">DIVI Intensivregister</a>
+                gesammelt und gespeichert.<br>
+                Nutzung der Daten ist unter
+                <a href="https://creativecommons.org/licenses/by-sa/3.0/de/" target="_blank">CC BY-SA 3.0</a>
+                möglich. Zitatvorschlag:
+                <i>
+                    Hohner, J., Lengenfelder, L. (2020),
+                    <a href="https://divi.hohner.dev">https://divi.hohner.dev</a>
+                </i>
+            </p>
+            <a href="{{ route('export', ['type' => 'json']) }}" class="btn-get-started mr-2 font-weight-bold">JSON</a>
+            <a href="{{ route('export', ['type' => 'csv']) }}" class="btn-get-started ml-2 font-weight-bold">CSV</a>
+        </div>
+    </section>
 
-    <h2>Kliniken</h2>
-    <p>Spalten sind per Klick auf den Spaltentitel sortierbar.</p>
+    <section class="padd-section">
+        <div class="container text-center">
+            <h2>Kliniken</h2>
+            <p>Spalten sind per Klick auf den Spaltentitel sortierbar.</p>
+        </div>
 
-    <table class="table table-striped sortable" id="clinics">
-        <thead class="thead-light">
+        <table class="table table-striped sortable" id="clinics">
+            <thead class="thead-light">
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
@@ -34,8 +38,8 @@
                 <th scope="col">Anzahl Updates</th>
                 <th scope="col">letzter Stand</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach($clinics as $clinic)
                 <tr>
                     <th scope="row">{{ $clinic['id'] }}</th>
@@ -53,6 +57,7 @@
                     </td>
                 </tr>
             @endforeach
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </section>
 @endsection
