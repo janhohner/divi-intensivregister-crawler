@@ -19,7 +19,15 @@ mix.scripts(
 )
     .styles(
         [
+            'resources/css/vendor/style.css',
             'resources/css/style.css'
         ],
         'public/css/style.css'
-    );
+    )
+    .copyDirectory('resources/img', 'public/img');
+
+if (mix.inProduction()) {
+    mix.version()
+} else {
+    mix.sourceMaps().browserSync("127.0.0.1:8000");
+}
