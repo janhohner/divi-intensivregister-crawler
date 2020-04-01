@@ -91,7 +91,11 @@ class GetMapData extends Command
         foreach ($htmlLines as $line) {
             $line = trim($line);
 
-            if (Str::startsWith($line, 'vegaEmbed("#bottom_')) {
+            $dataStart = 'vegaEmbed("#bottom_';
+            if (Str::startsWith($line, $dataStart)) {
+                $state = substr($line, strpos($line, $dataStart) + strlen($dataStart));
+                $state = substr($state, 0, strpos($state, '"'));
+
                 $line = substr($line, stripos($line, '{'));
                 $line = substr($line, 0, strripos($line, ', {'));
 
@@ -107,7 +111,7 @@ class GetMapData extends Command
                     }
                 }
 
-                foreach ($data as $entry) {
+                foreach ($data as $entryKey => $entry) {
                     foreach ($entry as $k => $v) {
                         $entry[$k] = trim($v);
                     }
@@ -116,15 +120,13 @@ class GetMapData extends Command
                         throw new Exception('Empty clinic name! Trying again next cycle.');
                     }
 
+                    $entry['Bundesland'] = $state;
                     $entry['id'] = sha1(strtolower($entry['Klinikname'] . $entry['Bundesland']));
+
+                    $data[$entryKey] = $entry;
                 }
 
                 $data = collect($data)
-                    ->map(function (array $entry) {
-
-
-                        return $entry;
-                    })
                     ->groupBy('id')
                     ->map(function (Collection $collection) {
                         $first = $collection->first();
