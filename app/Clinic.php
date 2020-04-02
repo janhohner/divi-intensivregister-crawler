@@ -55,4 +55,17 @@ class Clinic extends Model
         return static::where('clinic_identifier', '=', $identifier)
             ->first();
     }
+
+    public static function getLastUpdate(): ?Carbon
+    {
+        /** @var Clinic $lastEntry */
+        $lastEntry = static::orderBy('updated_at', 'desc')
+            ->first();
+
+        if (! $lastEntry) {
+            return null;
+        }
+
+        return $lastEntry->updated_at;
+    }
 }

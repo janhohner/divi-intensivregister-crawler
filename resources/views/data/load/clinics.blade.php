@@ -5,9 +5,12 @@
         <div class="container">
             <h1>Klinikauslastung</h1>
             <p>
-                Die Daten werden stündlich aus dem
+                Die Daten werden stündlich zur vollen Stunde aus dem
                 <a href="https://www.divi.de/register/intensivregister" target="_blank">DIVI Intensivregister</a>
                 gesammelt und gespeichert.<br>
+                @if ($lastUpdate)
+                    Die neuesten Einträge sind vom {{ $lastUpdate->format('d.m.Y H:i') }} Uhr.<br>
+                @endif
                 Nutzung der Daten ist unter
                 <a href="https://creativecommons.org/licenses/by-sa/3.0/de/" target="_blank">CC BY-SA 3.0</a>
                 möglich. Zitatvorschlag:

@@ -65,4 +65,20 @@ class MapClinic extends Model
 
         return $youngestEntry->last_submit_at->lessThan($importDate);
     }
+
+    /**
+     * @return Carbon|null
+     */
+    public static function getLastUpdate(): ?Carbon
+    {
+        /** @var static $lastEntry */
+        $lastEntry = static::orderBy('updated_at', 'desc')
+            ->first();
+
+        if (! $lastEntry) {
+            return null;
+        }
+
+        return $lastEntry->updated_at;
+    }
 }

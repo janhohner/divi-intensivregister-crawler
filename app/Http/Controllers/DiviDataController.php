@@ -8,9 +8,11 @@ use App\DataRequest;
 use App\MapClinic;
 use App\MapClinicStatus;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 use League\Csv\CannotInsertRecord;
 use League\Csv\Writer;
 use ZipStream\Exception\OverflowException;
@@ -19,6 +21,9 @@ use ZipStream\ZipStream;
 
 class DiviDataController extends Controller
 {
+    /**
+     * @return Factory|View
+     */
     public function showAllLoad()
     {
         $clinics = Clinic::with('statuses')
@@ -28,11 +33,18 @@ class DiviDataController extends Controller
                 return $this->mapLoadClinic($clinic);
             })->all();
 
+        $lastUpdate = Clinic::getLastUpdate();
+
         return view('data.load.clinics', [
             'clinics' => $clinics,
+            'lastUpdate' => $lastUpdate,
         ]);
     }
 
+    /**
+     * @param string $id
+     * @return Factory|View
+     */
     public function showLoad(string $id)
     {
         /** @var Clinic $clinic */
@@ -199,6 +211,9 @@ class DiviDataController extends Controller
             ->all();
     }
 
+    /**
+     * @return Factory|View
+     */
     public function showAllCases()
     {
         $clinics = MapClinic::with('statuses')
@@ -208,12 +223,18 @@ class DiviDataController extends Controller
                 return $this->mapCasesClinic($clinic);
             })->all();
 
+        $lastUpdate = MapClinic::getLastUpdate();
+
         return view('data.cases.clinics', [
             'clinics' => $clinics,
+            'lastUpdate' => $lastUpdate,
         ]);
     }
 
-
+    /**
+     * @param string $id
+     * @return Factory|View
+     */
     public function showCases(string $id)
     {
         /** @var MapClinic $clinic */
@@ -269,5 +290,99 @@ class DiviDataController extends Controller
             ];
         })
             ->all();
+    }
+
+    /**
+     * @param string $type
+     * @return JsonResponse|void
+     * @throws CannotInsertRecord
+     * @throws OverflowException
+     */
+    public function exportCases(string $type)
+    {
+        if ($type === 'json') {
+            return $this->exportCasesJson();
+        } else if ($type === 'csv') {
+            return $this->exportCasesCsv();
+        }
+
+        abort(400, 'Unknown export format');
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    private function exportCasesJson()
+    {
+        $clinics = MapClinic::with('statuses')
+            ->orderBy('name', 'asc')
+            ->get()
+            ->map(function (MapClinic $clinic) {
+                return $this->mapCasesClinic($clinic, true);
+            })->all();
+
+        DataRequest::incrementKey('cases_json_request');
+
+        return response()->json($clinics);
+    }
+
+    /**
+     * @throws CannotInsertRecord
+     * @throws OverflowException
+     */
+    private function exportCasesCsv()
+    {
+        $clinics = MapClinic::with('statuses')
+            ->orderBy('name', 'asc')
+            ->get()
+            ->map(function (MapClinic $clinic) {
+                return $this->mapCasesClinic($clinic);
+            });
+
+        $headerClinics = ['id', 'name', 'state', 'lat', 'lon', 'num_statuses', 'last_submit_at'];
+        $recordsClinics = $clinics->map(function (array $clinic) {
+            return [
+                $clinic['id'],
+                $clinic['name'],
+                $clinic['state'],
+                $clinic['lat'],
+                $clinic['lon'],
+                $clinic['statuses']->count(),
+                $clinic['last_submit_at']->toISOString(),
+            ];
+        })->all();
+
+        $csvClinics = Writer::createFromString('');
+        $csvClinics->insertOne($headerClinics);
+        $csvClinics->insertAll($recordsClinics);
+
+        $headerStatuses = ['id', 'map_clinic_id', 'covid19_cases', 'submitted_at'];
+        $recordsStatuses = [];
+        foreach ($clinics as $clinic) {
+            foreach ($clinic['statuses'] as $status) {
+                $recordsStatuses[] = [
+                    $status->id,
+                    $status->map_clinic_id,
+                    $status->covid19_cases,
+                    $status->submitted_at->toISOString(),
+                ];
+            }
+        }
+
+        $csvStatuses = Writer::createFromString('');
+        $csvStatuses->insertOne($headerStatuses);
+        $csvStatuses->insertAll($recordsStatuses);
+
+        $options = new Archive();
+        $options->setSendHttpHeaders(true);
+
+        $now = Carbon::now();
+        $zip = new ZipStream('divi_map_data_csv_export-' . $now->format('Ymd-His') . '.zip', $options);
+        $zip->addFile('map_clinics.csv', $csvClinics->getContent());
+        $zip->addFile('map_clinics_statuses.csv', $csvStatuses->getContent());
+
+        DataRequest::incrementKey('cases_csv_request');
+
+        $zip->finish();
     }
 }

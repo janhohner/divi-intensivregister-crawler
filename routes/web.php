@@ -22,6 +22,7 @@ Route::get('data/load/export/{type}',   'DiviDataController@exportLoad')    ->na
 
 Route::get('data/cases/clinics',        'DiviDataController@showAllCases')   ->name('data.cases.clinics');
 Route::get('data/cases/clinic/{id}',    'DiviDataController@showCases')      ->name('data.cases.clinic');
+Route::get('data/cases/export/{type}',  'DiviDataController@exportCases')    ->name('data.cases.export');
 
 /* backwards compatibility */
 Route::get('clinics', function () { return redirect()->route('data.load.clinics'); });

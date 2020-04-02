@@ -27,5 +27,21 @@ class DataRequestSeeder extends Seeder
             $csvRequest->value = 0;
             $csvRequest->save();
         }
+
+        $casesJsonRequest = DataRequest::firstWhere('key', '=', 'cases_json_request');
+        if (! $casesJsonRequest) {
+            $casesJsonRequest = new DataRequest();
+            $casesJsonRequest->key = 'cases_json_request';
+            $casesJsonRequest->value = 0;
+            $casesJsonRequest->save();
+        }
+
+        $casesCsvRequest = DataRequest::firstWhere('key', '=', 'cases_csv_request');
+        if (! $casesCsvRequest) {
+            $casesCsvRequest = new DataRequest();
+            $casesCsvRequest->key = 'cases_csv_request';
+            $casesCsvRequest->value = 0;
+            $casesCsvRequest->save();
+        }
     }
 }

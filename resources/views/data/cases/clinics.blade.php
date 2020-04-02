@@ -7,17 +7,20 @@
             <p>
                 Die Daten werden stündlich zur halben Stunde aus der
                 <a href="https://www.divi.de/register/kartenansicht" target="_blank">DIVI Intensivregister Kartenansicht</a>
-                gesammelt und gespeichert.<!--<br>
+                gesammelt und gespeichert.<br>
+                @if ($lastUpdate)
+                    Die neuesten Einträge sind vom {{ $lastUpdate->format('d.m.Y H:i') }} Uhr.<br>
+                @endif
                 Nutzung der Daten ist unter
                 <a href="https://creativecommons.org/licenses/by-sa/3.0/de/" target="_blank">CC BY-SA 3.0</a>
                 möglich. Zitatvorschlag:
                 <i>
                     Hohner, J., Lengenfelder, L. (2020),
                     <a href="https://divi.hohner.dev">https://divi.hohner.dev</a>
-                </i>-->
+                </i>
             </p>
-            <!--<a href="{{ route('data.load.export', ['type' => 'json']) }}" class="btn-get-started mr-2 font-weight-bold">JSON</a>
-            <a href="{{ route('data.load.export', ['type' => 'csv']) }}" class="btn-get-started ml-2 font-weight-bold">CSV</a>-->
+            <a href="{{ route('data.cases.export', ['type' => 'json']) }}" class="btn-get-started mr-2 font-weight-bold">JSON</a>
+            <a href="{{ route('data.cases.export', ['type' => 'csv']) }}" class="btn-get-started ml-2 font-weight-bold">CSV</a>
         </div>
     </section>
 
