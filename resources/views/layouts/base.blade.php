@@ -34,6 +34,11 @@
                         <a href="{{ route('data.cases.clinics') }}">Fallzahlen</a>
                     </li>
                     <!--<li><a href="#screenshots">Über uns</a></li>-->
+                    <li>
+                        <a href="https://github.com/janhohner/divi-intensivregister-crawler" target="_blank">
+                            Code (Github)
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>

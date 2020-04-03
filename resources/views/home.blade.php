@@ -14,7 +14,11 @@
                     DIVI bezieht die Daten für beide Seiten vom <a href="https://www.rki.de/" target="_blank">Robert Koch Institut</a>, vom ARDS
                     Netzwerk und von der
                     <a href="https://www.dkgev.de/" target="_blank">Deutschen Krankenhaus Gesellschaft (DKG)</a>.
-                    Auf der jeweiligen Unterseite gibt es auch die Möglichkeit die Daten als JSON oder CSV herunterzuladen.
+                    Auf der jeweiligen Unterseite gibt es auch die Möglichkeit die Daten als JSON oder CSV herunterzuladen.<br>
+                    Der Code für dieses Projekt ist auf
+                    <a href="https://github.com/janhohner/divi-intensivregister-crawler" target="_blank">Github</a>
+                    abrufbar und kann unter
+                    <a href="https://opensource.org/licenses/MIT" target="_blank">MIT Lizenz</a> verwendet werden.
                 </p>
                 <a href="{{ route('data.load.clinics') }}" class="btn-get-started mr-2 font-weight-bold">Auslastung</a>
                 <a href="{{ route('data.cases.clinics') }}" class="btn-get-started ml-2 font-weight-bold">Fallzahlen</a>
