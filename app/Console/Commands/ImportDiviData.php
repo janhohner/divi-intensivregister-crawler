@@ -212,9 +212,7 @@ class ImportDiviData extends Command
                 if ($response->status() === 200) {
                     return $response;
                 }
-            } catch (Exception $exception) {
-                $this->output->error($exception->getMessage());
-            }
+            } catch (Exception $exception) {}
 
             sleep(5);
             $tries++;
