@@ -49,4 +49,17 @@ class DiviClinicData extends Model
     {
         return $this->belongsTo(DiviClinic::class, 'divi_clinics_id', 'id');
     }
+
+    public function mapForOutput(): array
+    {
+        return [
+            'id' => $this->id,
+            'divi_clinics_id' => $this->divi_clinics_id,
+            'low_care' => $this->low_care,
+            'high_care' => $this->high_care,
+            'ecmo' => $this->ecmo,
+            'covid19_cases' => $this->covid19_cases,
+            'submitted_at' => $this->submitted_at->toISOString(),
+        ];
+    }
 }

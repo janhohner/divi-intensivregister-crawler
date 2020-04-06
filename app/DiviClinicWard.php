@@ -33,12 +33,15 @@ class DiviClinicWard extends Model
         'divi_id',
         'description',
         'organisation_tag',
+        'ards_network_member',
         'last_submit_at',
     ];
 
     protected $hidden = [];
 
-    protected $casts = [];
+    protected $casts = [
+        'ards_network_member' => 'bool',
+    ];
 
     protected $dates = [
         'last_submit_at',
@@ -67,5 +70,21 @@ class DiviClinicWard extends Model
     public static function findByDiviId(string $diviId)
     {
         return static::firstWhere('divi_id', '=', $diviId);
+    }
+
+    public function mapForOutput(): array
+    {
+        return [
+            'id' => $this->id,
+            'divi_clinics_id' => $this->divi_clinics_id,
+            'divi_id' => $this->divi_id,
+            'description' => $this->description,
+            'organisation_tag' => $this->organisation_tag,
+            'ards_network_member' => $this->ards_network_member,
+            'last_submit_at' => $this->last_submit_at->toISOString(),
+            'data' => $this->data->map(function (DiviClinicWardData $data) {
+                return $data->mapForOutput();
+            })->all(),
+        ];
     }
 }

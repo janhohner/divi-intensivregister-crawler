@@ -27,7 +27,6 @@ class DiviClinicWardData extends Model
         'divi_clinic_wards_id',
         'ecmo_cases_year',
         'beds_planned_capacity',
-        'ards_network_member',
         'submitted_at',
     ];
 
@@ -45,5 +44,16 @@ class DiviClinicWardData extends Model
     public function ward()
     {
         return $this->belongsTo(DiviClinicWard::class, 'divi_clinic_wards_id', 'id');
+    }
+
+    public function mapForOutput(): array
+    {
+        return [
+            'id' => $this->id,
+            'divi_clinic_wards_id' => $this->divi_clinic_wards_id,
+            'ecmo_cases_year' => $this->ecmo_cases_year,
+            'beds_planned_capacity' => $this->beds_planned_capacity,
+            'submitted_at',
+        ];
     }
 }

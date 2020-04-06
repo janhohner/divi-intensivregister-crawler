@@ -78,4 +78,28 @@ class DiviClinic extends Model
     {
         return static::firstWhere('divi_id', '=', $diviId);
     }
+
+    public function mapForOutput(): array
+    {
+        return [
+            'id' => $this->id,
+            'divi_id' => $this->divi_id,
+            'ik_number' => $this->ik_number,
+            'description' => $this->description,
+            'street' => $this->street,
+            'street_number' => $this->street_number,
+            'postcode' => $this->postcode,
+            'city' => $this->city,
+            'state' => $this->state,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'last_submit_at' => $this->last_submit_at->toISOString(),
+            'data' => $this->data->map(function (DiviClinicData $data) {
+                return $data->mapForOutput();
+            })->all(),
+            'wards' => $this->wards->map(function (DiviClinicWard $ward) {
+                return $ward->mapForOutput();
+            })->all(),
+        ];
+    }
 }

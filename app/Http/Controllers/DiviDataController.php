@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Clinic;
 use App\ClinicStatus;
 use App\DataRequest;
+use App\DiviClinic;
 use App\MapClinic;
 use App\MapClinicStatus;
 use Carbon\Carbon;
@@ -384,5 +385,28 @@ class DiviDataController extends Controller
         DataRequest::incrementKey('cases_csv_request');
 
         $zip->finish();
+    }
+
+    public function exportDivi(string $type)
+    {
+        if ($type === 'json') {
+            return $this->exportDiviJson();
+        }
+
+        abort(400, 'Unknown export format');
+    }
+
+    private function exportDiviJson()
+    {
+        $clinics = DiviClinic::with(['data', 'wards', 'wards.data'])
+            ->orderBy('postcode', 'asc')
+            ->get()
+            ->map(function (DiviClinic $clinic) {
+                return $clinic->mapForOutput();
+            })->all();
+
+        DataRequest::incrementKey('cases_json_request');
+
+        return response()->json($clinics);
     }
 }
