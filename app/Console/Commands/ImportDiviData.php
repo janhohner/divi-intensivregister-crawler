@@ -109,6 +109,7 @@ class ImportDiviData extends Command
             $this->output->progressAdvance();
         }
 
+        $secondsWaitAfterEachRequest = 5;
         $this->output->writeln('');
         $this->output->writeln('');
         $this->output->title('Importing clinic data');
@@ -117,7 +118,7 @@ class ImportDiviData extends Command
         foreach ($clinicsForWardProcessing as $clinic) {
             $this->getWardsForClinic($clinic);
 
-            usleep(1000000);
+            usleep($secondsWaitAfterEachRequest * 1000000);
 
             $this->output->progressAdvance();
         }
