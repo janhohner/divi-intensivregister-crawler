@@ -43,5 +43,13 @@ class DataRequestSeeder extends Seeder
             $casesCsvRequest->value = 0;
             $casesCsvRequest->save();
         }
+
+        $diviJsonRequest = DataRequest::firstWhere('key', '=', 'divi_json_request');
+        if (! $diviJsonRequest) {
+            $diviJsonRequest = new DataRequest();
+            $diviJsonRequest->key = 'divi_json_request';
+            $diviJsonRequest->value = 0;
+            $diviJsonRequest->save();
+        }
     }
 }

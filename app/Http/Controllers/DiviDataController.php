@@ -405,7 +405,7 @@ class DiviDataController extends Controller
                 return $clinic->mapForOutput();
             })->all();
 
-        DataRequest::incrementKey('cases_json_request');
+        DataRequest::incrementKey('divi_json_request');
 
         return response()->json($clinics);
     }
