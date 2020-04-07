@@ -237,7 +237,7 @@ class ImportDiviData extends Command
         switch ($status) {
             case 'VERFUEGBAR':
                 return 'available';
-            case 'BREGRENZT':
+            case 'BEGRENZT':
                 return 'limited';
             case 'NICHT_VERFUEGBAR':
                 return 'unavailable';
