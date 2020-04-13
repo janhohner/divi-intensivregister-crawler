@@ -178,7 +178,8 @@ class ImportDiviData extends Command
      */
     private function makeRegisterRequest(int $size): Response
     {
-        $url = 'https://www.intensivregister.de/api/public/intensivregister?page=0&size=' . $size;
+        //$url = 'https://www.intensivregister.de/api/public/intensivregister?page=0&size=' . $size;
+        $url = 'https://interaktiv.morgenpost.de/corona-deutschland-intensiv-betten-monitor-krankenhaus-auslastung/data/intensivregister.json';
         return $this->makeRequest($url);
     }
 
