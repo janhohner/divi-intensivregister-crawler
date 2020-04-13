@@ -99,7 +99,7 @@ class ImportDiviData extends Command
                 $clinicData->low_care = $this->mapDiviBedStatus($entry['bettenStatus']['statusLowCare']);
                 $clinicData->high_care = $this->mapDiviBedStatus($entry['bettenStatus']['statusHighCare']);
                 $clinicData->ecmo = $this->mapDiviBedStatus($entry['bettenStatus']['statusECMO']);
-                $clinicData->covid19_cases = $entry['faelleCovidAktuell'] ? $entry['faelleCovidAktuell'] : 0;
+                $clinicData->covid19_cases = isset($entry['faelleCovidAktuell']) ? $entry['faelleCovidAktuell'] : 0;
                 $clinicData->submitted_at = $lastSubmitAt;
                 $clinicData->save();
             }
